@@ -3,7 +3,8 @@ from cryptography.fernet import Fernet
 
 message = input("Please enter a string: ")
 
-option = input("What do you want to do, encryption (type 'enc') or decryption (type 'dec') or both (type 'both'): ")
+option = input(
+    "What do you want to do, encryption (type 'enc') or decryption (type 'dec') or both (type 'both'): ")
 option.lower()
 
 key = Fernet.generate_key()
