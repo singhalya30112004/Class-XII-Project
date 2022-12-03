@@ -69,10 +69,15 @@ encrypt.grid(column=2, row=6, sticky=(W,E))
 decrypt = ttk.Radiobutton(mainframe, text='Decrypt', variable=encryptOrDecrypt, value='decrypt', style='buttons.TRadiobutton')
 decrypt.grid(column=2, row=7, sticky=(W,E))
 
-#Submit form
-def submitForm():
-    return
-button = ttk.Button(mainframe, text='Submit', command=submitForm)
+#Initiate program on button submit
+def main():
+    #Initializing inputs
+    text = inputString.get()
+    fileName= fileButton.cget('text')
+    processChoice = encryptOrDecrypt.get()
+    algorithmChoice = dropdown.get()
+
+button = ttk.Button(mainframe, text='Submit', command=main)
 button.grid(column=2, row=8, sticky=(W,E))
 
 for child in mainframe.winfo_children(): 
