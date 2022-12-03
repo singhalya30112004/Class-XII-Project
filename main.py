@@ -77,6 +77,15 @@ def main():
     processChoice = encryptOrDecrypt.get()
     algorithmChoice = dropdown.get()
 
+    #If neither text nor file are provided
+    if (text == "Enter a string" or text == "") and fileName == "Select a file":
+        print("SUBMIT ERROR: Please provide input and try again")
+        quit()
+    #If both text and file are provided
+    elif (text != "Enter a string" or text != "") and fileName != "Select a file":
+        print("SUBMIT ERROR: Please provide only one input and try again")
+        quit()
+
 button = ttk.Button(mainframe, text='Submit', command=main)
 button.grid(column=2, row=8, sticky=(W,E))
 
