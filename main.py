@@ -1,11 +1,12 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
 from PIL import Image, ImageTk
 
 #Root window and mainframe settings
 root = Tk()
 root.title("Cryptik")
-root.minsize(width=500, height=600)
+root.minsize(width=500, height=300)
 root['bg'] = 'white'
 s = ttk.Style()
 s.configure('Mainframe.TFrame', background='white')
@@ -42,6 +43,16 @@ s.configure('orLabel.TLabel', background="white", font="none 14 bold")
 orLabel = ttk.Label(mainframe, text="or", style="orLabel.TLabel")
 orLabel.grid(column=2, row=2, sticky=(W, E))
 orLabel.config(anchor=CENTER)
+
+#File upload
+def UploadAction(event=None):
+    filename = filedialog.askopenfilename()
+    #Display file name rather than full path
+    breakFile = filename.split("/")
+    fileButton.configure(text=breakFile[-1])
+    print('Selected:', filename)
+fileButton = ttk.Button(mainframe, text='Select a file', command=UploadAction)
+fileButton.grid(column= 3, row = 2, sticky=(E))
 
 for child in mainframe.winfo_children(): 
     child.grid_configure(padx=5, pady=5)

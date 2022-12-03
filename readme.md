@@ -9,6 +9,10 @@ amalgam.py: temporary file to test additions to the interface + adding in more a
 
 csvfile.csv: contains susbtitution key for main.py
 
-Libraries used: 
-tkinter
-pillow
+## Installation and Running
+Download or clone repo</br>
+Run:
+```
+pip install -r requirements.txt
+python main.py
+```
