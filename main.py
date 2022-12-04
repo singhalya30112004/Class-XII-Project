@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from PIL import Image, ImageTk
 
+
 #Root window and mainframe settings
 root = Tk()
 root.title("Cryptik")
@@ -57,7 +58,7 @@ fileButton.grid(column= 2, row = 4, sticky=(W,E))
 #Dropdown menu 
 choices = StringVar()
 dropdown = ttk.Combobox(mainframe, textvariable=choices)
-dropdown['values'] = ('Asymmetric Key', 'Symmetric Key', 'One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser')
+dropdown['values'] = ('RSA', 'Fernet', 'One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser')
 dropdown.state(["readonly"])
 dropdown.grid(column=2, row=5, sticky=(W,E))
 
@@ -77,14 +78,57 @@ def main():
     processChoice = encryptOrDecrypt.get()
     algorithmChoice = dropdown.get()
 
-    #If neither text nor file are provided
-    if (text == "Enter a string" or text == "") and fileName == "Select a file":
+    #Input error checks
+    if (text == "Enter a string" or text == "") and (fileName == "Select a file" or fileName == ""):
         print("SUBMIT ERROR: Please provide input and try again")
         quit()
-    #If both text and file are provided
-    elif (text != "Enter a string" or text != "") and fileName != "Select a file":
+    elif (text != "Enter a string" and text != "") and (fileName != "Select a file" and fileName != ""):
         print("SUBMIT ERROR: Please provide only one input and try again")
         quit()
+    elif algorithmChoice == "":
+        print("SUBMIT ERROR: Please choose an algorithm and try again")
+        quit()
+    elif processChoice == "": 
+        print("SUBMIT ERROR: Please specify encryption or decryption and try again")
+
+    #Checking for algorithm
+    if algorithmChoice == 'RSA':
+        if processChoice == 'encrypt':
+            output = ttk.Label(mainframe, text="sdsds", style="orLabel.TLabel")
+            output.grid(column=2, row=9, sticky=(W,E))
+        else: 
+            output = ttk.Label(mainframe, text="sdsds", style="orLabel.TLabel")
+            output.grid(column=2, row=9, sticky=(W,E))
+    '''elif algorithmChoice == 'Fernet':
+        if processChoice == 'encrypt':
+            
+        else: 
+            
+    elif algorithmChoice == 'One Time Pad':
+        if processChoice == 'encrypt':
+            
+        else: 
+            
+    elif algorithmChoice == 'Reverse':
+        if processChoice == 'encrypt':
+            #do something
+        else: 
+            #do something else
+    elif algorithmChoice == 'XOR':
+        if processChoice == 'encrypt':
+            #do something
+        else: 
+            #do something else
+    elif algorithmChoice == 'Atbash':
+        if processChoice == 'encrypt':
+            #do something
+        else: 
+            #do something else
+    elif algorithmChoice == 'Caeser':
+        if processChoice == 'encrypt':
+            #do something
+        else: 
+            #do something else'''
 
 button = ttk.Button(mainframe, text='Submit', command=main)
 button.grid(column=2, row=8, sticky=(W,E))
