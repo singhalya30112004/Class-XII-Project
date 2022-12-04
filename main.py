@@ -78,9 +78,10 @@ def main():
     fileName= fileButton.cget('text')
     processChoice = encryptOrDecrypt.get()
     algorithmChoice = dropdown.get()
-    filetypes = fileName.split('.')
+    
     #Get filetype
-    fileExtension = filetypes[-1]
+    fileTypes = fileName.split('.')
+    fileExtension = fileTypes[-1]
     #Input error checks
     if (text == "Enter a string" or text == "") and (fileName == "Select a file" or fileName == ""):
         print("SUBMIT ERROR: Please provide input and try again")
@@ -119,7 +120,7 @@ def main():
                 with open(filePath, 'r') as myfile:
                     encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_encrypted' + '.' + fileExtension), 'x')
                     for line in myfile:
-                        encryptedFile.write(str(rsa.encrypt(line.encode(), publicKey)))
+                        encryptedFile.write(str(rsa.encrypt(line.encode(), publicKey)) +'\n')
                     encryptedFile.close()
                     enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
                     enc.grid(column=2, row=9, sticky=(W,E))
