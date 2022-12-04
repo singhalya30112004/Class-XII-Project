@@ -215,7 +215,7 @@ def main():
                 output.configure(state="readonly")
             elif userInput == 'file':
                 with open(filePath, 'r') as myfile:
-                    encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_encrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                     for line in myfile:
                         encryptedFile.write(onetimepad.encrypt(line, 'random'))
                         encryptedFile.write('\n')
@@ -234,7 +234,7 @@ def main():
                 output.configure(state="readonly")
             elif userInput == 'file':
                 with open(filePath, 'r') as myfile:
-                    encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_decrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                     for line in myfile:
                         encryptedFile.write(onetimepad.decrypt(line[:-1], 'random'))
                         encryptedFile.write('\n')
