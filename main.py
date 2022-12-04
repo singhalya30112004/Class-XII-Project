@@ -47,11 +47,12 @@ orLabel.config(anchor=CENTER)
 
 #File upload
 def UploadAction(event=None):
-    filename = filedialog.askopenfilename()
+    global filePath
+    filePath = filedialog.askopenfilename()
     #Display file name rather than full path
-    breakFile = filename.split("/")
+    breakFile = filePath.split("/")
     fileButton.configure(text=breakFile[-1])
-    print('Selected:', filename)
+    print('Selected:', filePath)
 fileButton = ttk.Button(mainframe, text='Select a file', command=UploadAction)
 fileButton.grid(column= 2, row = 4, sticky=(W,E))
 
@@ -77,7 +78,9 @@ def main():
     fileName= fileButton.cget('text')
     processChoice = encryptOrDecrypt.get()
     algorithmChoice = dropdown.get()
-
+    filetypes = fileName.split('.')
+    #Get filetype
+    fileExtension = filetypes[-1]
     #Input error checks
     if (text == "Enter a string" or text == "") and (fileName == "Select a file" or fileName == ""):
         print("SUBMIT ERROR: Please provide input and try again")
@@ -90,6 +93,7 @@ def main():
         quit()
     elif processChoice == "": 
         print("SUBMIT ERROR: Please specify encryption or decryption and try again")
+        quit()
     #Checking if input is string or file
     elif text != "Enter a string" and text != "":
         userInput = 'string'
@@ -111,15 +115,22 @@ def main():
                 output.insert(0, encryptedMessage)
                 output.configure(state="readonly")
 
-                #Displaying private key
-                priv = ttk.Label(mainframe, text="Private key for decryption is: ", style="orLabel.TLabel")
-                priv.grid(column=2, row=11, sticky=(W,E))
-                dispkey = ttk.Entry(mainframe)
-                dispkey.grid(column=2, row=12, sticky=(W,E))
-                dispkey.insert(0, privateKey)
-                dispkey.configure(state="readonly")
-            #elif userInput == 'file':
-            #    with open
+            elif userInput == 'file':
+                with open(filePath, 'r') as myfile:
+                    encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_encrypted' + '.' + fileExtension), 'x')
+                    for line in myfile:
+                        encryptedFile.write(str(rsa.encrypt(line.encode(), publicKey)))
+                    encryptedFile.close()
+                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W,E))
+
+            #Displaying private key
+            priv = ttk.Label(mainframe, text="Private key for decryption is: ", style="orLabel.TLabel")
+            priv.grid(column=2, row=11, sticky=(W,E))
+            dispkey = ttk.Entry(mainframe)
+            dispkey.grid(column=2, row=12, sticky=(W,E))
+            dispkey.insert(0, privateKey)
+            dispkey.configure(state="readonly")
 
         else: 
             output = ttk.Label(mainframe, text="sdsds", style="orLabel.TLabel")
