@@ -2,7 +2,9 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-import rsa
+import onetimepad
+#import rsa
+#from cryptography.fernet import Fernet
 
 #Root window and mainframe settings
 root = Tk()
@@ -59,7 +61,7 @@ fileButton.grid(column= 2, row = 4, sticky=(W,E))
 #Dropdown menu 
 choices = StringVar()
 dropdown = ttk.Combobox(mainframe, textvariable=choices)
-dropdown['values'] = ('RSA', 'Fernet', 'One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser')
+dropdown['values'] = ('One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser')
 dropdown.state(["readonly"])
 dropdown.grid(column=2, row=5, sticky=(W,E))
 
@@ -102,7 +104,7 @@ def main():
         userInput = 'file'
 
     #Checking for algorithm
-    if algorithmChoice == 'RSA':
+    '''if algorithmChoice == 'RSA':
         if processChoice == 'encrypt':
             publicKey, privateKey = rsa.newkeys(512)
             if userInput == 'string':
@@ -134,19 +136,113 @@ def main():
             dispkey.configure(state="readonly")
 
         else: 
-            output = ttk.Label(mainframe, text="sdsds", style="orLabel.TLabel")
-            output.grid(column=2, row=9, sticky=(W,E))
-    '''elif algorithmChoice == 'Fernet':
+            priv = ttk.Label(mainframe, text="Private key for decryption is: ", style="orLabel.TLabel")
+            priv.grid(column=2, row=9, sticky=(W,E))
+            s.configure('Entry.TEntry', background="white")
+            pKey = StringVar()
+            privKey = ttk.Entry(mainframe, textvariable=pKey, style='Entry.TEntry')
+            privKey.grid(column = 2, row = 10, sticky=(W,E))
+
+            if userInput == 'string':
+                decryptedMessage = rsa.decrypt(bytes(text), bytes(privKey.get())).decode()
+                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=11, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=12, sticky=(W,E))
+                output.insert(0, decryptedMessage)'''
+
+
+    '''if algorithmChoice == 'Fernet':
         if processChoice == 'encrypt':
+            key = Fernet.generate_key()
+            fernet = Fernet(key)
+
+            if userInput == 'string':
+                encryptedMessage = fernet.encrypt(text.encode())
+
+                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=10, sticky=(W,E))
+                output.insert(0, encryptedMessage)
+                output.configure(state="readonly")
+            elif userInput == 'file':
+                with open(filePath, 'r') as myfile:
+                    encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_encrypted' + '.' + fileExtension), 'x')
+                    for line in myfile:
+                        encryptedLine = fernet.encrypt(line.encode())
+                        encryptedFile.write(str(encryptedLine))
+                        encryptedFile.write('\n')
+                    encryptedFile.close()
+                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W,E))
             
+            priv = ttk.Label(mainframe, text="Key for decryption is: ", style="orLabel.TLabel")
+            priv.grid(column=2, row=11, sticky=(W,E))
+            dispkey = ttk.Entry(mainframe)
+            dispkey.grid(column=2, row=12, sticky=(W,E))
+            dispkey.insert(0, key)
+            dispkey.configure(state="readonly")
         else: 
+            priv = ttk.Label(mainframe, text="Key for decryption is: ", style="orLabel.TLabel")
+            priv.grid(column=2, row=9, sticky=(W,E))
+            s.configure('Entry.TEntry', background="white")
+            pKey = StringVar()
+            privKey = ttk.Entry(mainframe, textvariable=pKey, style='Entry.TEntry')
+            privKey.grid(column = 2, row = 10, sticky=(W,E))
+
+            fernet = Fernet(bytes(privKey.get()))
+
+            if userInput == 'string':
+
+
+                decryptedMessage = fernet.decrypt(bytes(text)).decode()
+                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=11, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=12, sticky=(W,E))
+                output.insert(0, decryptedMessage)'''
             
-    elif algorithmChoice == 'One Time Pad':
+    if algorithmChoice == 'One Time Pad':
         if processChoice == 'encrypt':
-            
+            if userInput == 'string':
+                encryptedMessage = onetimepad.encrypt(text, 'random')
+                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=10, sticky=(W,E))
+                output.insert(0, encryptedMessage)
+                output.configure(state="readonly")
+            elif userInput == 'file':
+                with open(filePath, 'r') as myfile:
+                    encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_encrypted' + '.' + fileExtension), 'x')
+                    for line in myfile:
+                        encryptedFile.write(onetimepad.encrypt(line, 'random'))
+                        encryptedFile.write('\n')
+                    encryptedFile.close()
+                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W,E))
         else: 
+            if userInput == 'string':
+                decryptedMessage = onetimepad.decrypt(text, 'random')
+                
+                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=10, sticky=(W,E))
+                output.insert(0, decryptedMessage)
+                output.configure(state="readonly")
+            elif userInput == 'file':
+                with open(filePath, 'r') as myfile:
+                    encryptedFile = open((filePath[:len(filePath) - len(fileName)] + fileName + '_decrypted' + '.' + fileExtension), 'x')
+                    for line in myfile:
+                        encryptedFile.write(onetimepad.decrypt(line[:-1], 'random'))
+                        encryptedFile.write('\n')
+                    encryptedFile.close()
+                    enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W,E))
             
-    elif algorithmChoice == 'Reverse':
+    '''elif algorithmChoice == 'Reverse':
         if processChoice == 'encrypt':
             #do something
         else: 
