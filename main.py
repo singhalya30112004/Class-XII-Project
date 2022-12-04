@@ -242,12 +242,40 @@ def main():
                     enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
                     enc.grid(column=2, row=9, sticky=(W,E))
             
-    '''elif algorithmChoice == 'Reverse':
-        if processChoice == 'encrypt':
-            #do something
-        else: 
-            #do something else
-    elif algorithmChoice == 'XOR':
+    elif algorithmChoice == 'Reverse':
+        if userInput == 'string':
+            encryptedMessage = ''
+            i = len(text) - 1
+            while i >= 0:
+                encryptedMessage = encryptedMessage + text[i]
+                i = i - 1
+            if processChoice == "encrypt":
+                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
+            else:
+                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
+            enc.grid(column=2, row=9, sticky=(W,E))
+            output = ttk.Entry(mainframe)
+            output.grid(column=2, row=10, sticky=(W,E))
+            output.insert(0, encryptedMessage)
+            output.configure(state="readonly")
+        
+        elif userInput == 'file':
+            with open(filePath, 'r') as myfile:
+                if processChoice == 'encrypt':
+                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                else:
+                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                for line in myfile:
+                    encryptedFile.write(line[::-1])
+                    encryptedFile.write('\n')
+                encryptedFile.close()
+                if processChoice == 'encrypt':
+                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
+                else:
+                    enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W,E))
+            
+    '''elif algorithmChoice == 'XOR':
         if processChoice == 'encrypt':
             #do something
         else: 
