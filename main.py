@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-
+import rsa
 
 #Root window and mainframe settings
 root = Tk()
@@ -90,12 +90,37 @@ def main():
         quit()
     elif processChoice == "": 
         print("SUBMIT ERROR: Please specify encryption or decryption and try again")
+    #Checking if input is string or file
+    elif text != "Enter a string" and text != "":
+        userInput = 'string'
+    elif fileName != "Select a file" and fileName != "":
+        userInput = 'file'
 
     #Checking for algorithm
     if algorithmChoice == 'RSA':
         if processChoice == 'encrypt':
-            output = ttk.Label(mainframe, text="sdsds", style="orLabel.TLabel")
-            output.grid(column=2, row=9, sticky=(W,E))
+            publicKey, privateKey = rsa.newkeys(512)
+            if userInput == 'string':
+                encryptedMessage = rsa.encrypt(text.encode(), publicKey)
+
+                #Displaying encrypted message
+                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=10, sticky=(W,E))
+                output.insert(0, encryptedMessage)
+                output.configure(state="readonly")
+
+                #Displaying private key
+                priv = ttk.Label(mainframe, text="Private key for decryption is: ", style="orLabel.TLabel")
+                priv.grid(column=2, row=11, sticky=(W,E))
+                dispkey = ttk.Entry(mainframe)
+                dispkey.grid(column=2, row=12, sticky=(W,E))
+                dispkey.insert(0, privateKey)
+                dispkey.configure(state="readonly")
+            #elif userInput == 'file':
+            #    with open
+
         else: 
             output = ttk.Label(mainframe, text="sdsds", style="orLabel.TLabel")
             output.grid(column=2, row=9, sticky=(W,E))
