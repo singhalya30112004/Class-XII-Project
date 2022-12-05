@@ -59,7 +59,7 @@ fileButton.grid(column= 2, row = 4, sticky=(W,E))
 #Dropdown menu 
 choices = StringVar()
 dropdown = ttk.Combobox(mainframe, textvariable=choices)
-dropdown['values'] = ('One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser', 'Substitution')
+dropdown['values'] = ('One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser')
 dropdown.state(["readonly"])
 dropdown.grid(column=2, row=5, sticky=(W,E))
 
@@ -82,7 +82,7 @@ def main():
     #Get filetype
     fileTypes = fileName.split('.')
     fileExtension = fileTypes[-1]
-    if fileExtension != 'txt':
+    if fileExtension != 'txt' and fileExtension != "" and fileExtension != "Select a file":
         print("SUBMIT ERROR: Upload a text file and try again")
         quit()
     #Input error checks
@@ -440,12 +440,6 @@ def main():
 
         button = ttk.Button(mainframe, text='Submit', command=Caeser)
         button.grid(column=2, row=11, sticky=(W,E))
-
-    '''elif algorithmChoice == 'Substitution':
-        if processChoice == 'encrypt':
-            #do something
-        else: 
-            #do something else'''
 
 button = ttk.Button(mainframe, text='Submit', command=main)
 button.grid(column=2, row=8, sticky=(W,E))
