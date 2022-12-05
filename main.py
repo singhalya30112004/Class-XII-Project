@@ -82,6 +82,9 @@ def main():
     #Get filetype
     fileTypes = fileName.split('.')
     fileExtension = fileTypes[-1]
+    if fileExtension != 'txt':
+        print("SUBMIT ERROR: Upload a text file and try again")
+        quit()
     #Input error checks
     if (text == "Enter a string" or text == "") and (fileName == "Select a file" or fileName == ""):
         print("SUBMIT ERROR: Please provide input and try again")
