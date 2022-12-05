@@ -265,13 +265,114 @@ def main():
         button = ttk.Button(mainframe, text='Submit', command=XOR)
         button.grid(column=2, row=11, sticky=(W,E))
 
-    '''elif algorithmChoice == 'Atbash':
+    elif algorithmChoice == 'Atbash':
         if processChoice == 'encrypt':
-            #do something
+            if userInput == 'string':
+                a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                r = a[::-1]
+                e = ""
+                message=text.upper()
+
+                for i in range(len(message)):
+                    if message[i] == chr(32):
+                        e += " "
+                    else:
+                        for j in range(len(a)):
+                            if message[i] == a[j]:
+                                e += r[j]
+                                break
+                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=12, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=13, sticky=(W,E))
+                output.insert(0, e)
+                output.configure(state="readonly")
+           
+            elif userInput == 'file':
+                with open(filePath, 'r') as myfile:
+                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                    for line in myfile:
+                        a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                        r = a[::-1]
+                        message = line.upper();
+                        e = ""
+
+                        for i in range(len(message)):
+                            if message[i] == chr(32):
+                                e += " "
+                            else:
+                                for j in range(len(a)):
+                                    if message[i] == a[j]:
+                                        e += r[j]
+                                        break
+                        encryptedFile.write(e)
+                        encryptedFile.write('\n')
+                    encryptedFile.close()
+                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W,E))
+
         else: 
-            #do something else
-    elif algorithmChoice == 'Caeser':
+            if userInput == 'string':
+                a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                r = a[::-1]
+                message = text.upper();
+                d = ""
+
+                for i in range(len(message)):
+                    if message[i] == chr(32):
+                        d += " "
+                    else:
+                        for j in range(len(r)):
+                            if message[i] == r[j]:
+                                d += a[j]
+                                break
+                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=12, sticky=(W,E))
+                output = ttk.Entry(mainframe)
+                output.grid(column=2, row=13, sticky=(W,E))
+                output.insert(0, d)
+                output.configure(state="readonly")
+
+            elif userInput == 'file':
+                with open(filePath, 'r') as myfile:
+                        encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                        for line in myfile:
+                            line = line.strip()
+                            a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            r = a[::-1]
+                            message = line.upper();
+                            d = ""
+
+                            for i in range(len(message)):
+                                if message[i] == chr(32):
+                                    d += " "
+                                else:
+                                    for j in range(len(r)):
+                                        if message[i] == r[j]:
+                                            d += a[j]
+                                            break
+                            encryptedFile.write(d)
+                            encryptedFile.write('\n')
+                        encryptedFile.close()
+                        enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
+                        enc.grid(column=2, row=9, sticky=(W,E))
+    
+    '''elif algorithmChoice == 'Caeser':
         if processChoice == 'encrypt':
+            def encryptchar(char, key):
+                return chr(ord('A') + (ord(char) - ord('A') + key) % 26)
+            def encryptmsg(message, key):
+                message = message.upper()
+                cipher = ''
+                for char in message:
+                    if char not in ' ,.':
+                        cipher += encryptchar(char, key)
+                    else:
+                        cipher += char
+                return cipher
+            
+            if userInput == 'string':
+
             #do something
         else: 
             #do something else
