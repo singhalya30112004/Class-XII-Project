@@ -4,7 +4,7 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 import onetimepad
 
-#Root window and mainframe settings
+# Root window and mainframe settings
 root = Tk()
 root.title("Cryptik")
 root.minsize(width=150, height=300)
@@ -12,80 +12,93 @@ root['bg'] = 'white'
 s = ttk.Style()
 s.configure('Mainframe.TFrame', background='white')
 mainframe = ttk.Frame(root, padding="3 3 12 12", style="Mainframe.TFrame")
-mainframe.grid(column = 0, row = 0, sticky=(N, W, E, S))
-root.columnconfigure(0, weight  = 1)
-root.rowconfigure(0, weight = 1)
+mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
 
-#Logo settings
+# Logo settings
 s.configure('label.TLabel', background="white")
 logo = ttk.Label(mainframe, style="label.TLabel")
 image = Image.open("logo.png")
-resize_image = image.resize((150,50))
+resize_image = image.resize((150, 50))
 img = ImageTk.PhotoImage(resize_image)
 logo['image'] = img
 logo.grid(column=2, row=1, sticky=(W, E))
 
-#User input field
+# User input field
 s.configure('Entry.TEntry', background="white")
 inputString = StringVar()
-textInput = ttk.Entry(mainframe, textvariable=inputString, style='Entry.TEntry')
-textInput.grid(column = 2, row = 2, sticky=(W,E))
+textInput = ttk.Entry(mainframe, textvariable=inputString,
+                      style='Entry.TEntry')
+textInput.grid(column=2, row=2, sticky=(W, E))
 
-#Placeholder text for user input
+# Placeholder text for user input
 textInput.insert(0, 'Enter a string')
 textInput.configure(state=DISABLED)
+
+
 def on_click(event):
     textInput.configure(state=NORMAL)
     textInput.delete(0, END)
+
+
 textInput.bind("<Button-1>", on_click)
 
-#OR label
+# OR label
 s.configure('orLabel.TLabel', background="white", font="none 10")
 orLabel = ttk.Label(mainframe, text="or", style="orLabel.TLabel")
 orLabel.grid(column=2, row=3, sticky=(W, E))
 orLabel.config(anchor=CENTER)
 
-#File upload
+# File upload
+
+
 def UploadAction(event=None):
     global filePath
     filePath = filedialog.askopenfilename()
-    #Display file name rather than full path
+    # Display file name rather than full path
     breakFile = filePath.split("/")
     fileButton.configure(text=breakFile[-1])
     print('Selected:', filePath)
-fileButton = ttk.Button(mainframe, text='Select a file', command=UploadAction)
-fileButton.grid(column= 2, row = 4, sticky=(W,E))
 
-#Dropdown menu 
+
+fileButton = ttk.Button(mainframe, text='Select a file', command=UploadAction)
+fileButton.grid(column=2, row=4, sticky=(W, E))
+
+# Dropdown menu
 choices = StringVar()
 dropdown = ttk.Combobox(mainframe, textvariable=choices)
 dropdown['values'] = ('One Time Pad', 'Reverse', 'XOR', 'Atbash', 'Caeser')
 dropdown.state(["readonly"])
-dropdown.grid(column=2, row=5, sticky=(W,E))
+dropdown.grid(column=2, row=5, sticky=(W, E))
 
-#Radiobuttons
+# Radiobuttons
 s.configure('buttons.TRadiobutton', background="white")
 encryptOrDecrypt = StringVar()
-encrypt = ttk.Radiobutton(mainframe, text='Encrypt', variable=encryptOrDecrypt, value='encrypt', style='buttons.TRadiobutton')
-encrypt.grid(column=2, row=6, sticky=(W,E))
-decrypt = ttk.Radiobutton(mainframe, text='Decrypt', variable=encryptOrDecrypt, value='decrypt', style='buttons.TRadiobutton')
-decrypt.grid(column=2, row=7, sticky=(W,E))
+encrypt = ttk.Radiobutton(mainframe, text='Encrypt', variable=encryptOrDecrypt,
+                          value='encrypt', style='buttons.TRadiobutton')
+encrypt.grid(column=2, row=6, sticky=(W, E))
+decrypt = ttk.Radiobutton(mainframe, text='Decrypt', variable=encryptOrDecrypt,
+                          value='decrypt', style='buttons.TRadiobutton')
+decrypt.grid(column=2, row=7, sticky=(W, E))
 
-#Initiate program on button submit
+# Initiate program on button submit
+
+
 def main():
-    #Initializing inputs
+    # Initializing inputs
     text = inputString.get()
-    fileName= fileButton.cget('text')
+    fileName = fileButton.cget('text')
     processChoice = encryptOrDecrypt.get()
     algorithmChoice = dropdown.get()
-    
-    #Get filetype
+
+    # Get filetype
     fileTypes = fileName.split('.')
     fileExtension = fileTypes[-1]
     if fileExtension != 'txt' and fileExtension != "" and fileExtension != "Select a file":
         print("SUBMIT ERROR: Upload a text file and try again")
         quit()
-    #Input error checks
+    # Input error checks
     if (text == "Enter a string" or text == "") and (fileName == "Select a file" or fileName == ""):
         print("SUBMIT ERROR: Please provide input and try again")
         quit()
@@ -95,55 +108,62 @@ def main():
     elif algorithmChoice == "":
         print("SUBMIT ERROR: Please choose an algorithm and try again")
         quit()
-    elif processChoice == "": 
+    elif processChoice == "":
         print("SUBMIT ERROR: Please specify encryption or decryption and try again")
         quit()
-    #Checking if input is string or file
+    # Checking if input is string or file
     elif text != "Enter a string" and text != "":
         userInput = 'string'
     elif fileName != "Select a file" and fileName != "":
         userInput = 'file'
 
-    #Checking for algorithm       
+    # Checking for algorithm
     if algorithmChoice == 'One Time Pad':
         if processChoice == 'encrypt':
             if userInput == 'string':
                 encryptedMessage = onetimepad.encrypt(text, 'random')
-                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
-                enc.grid(column=2, row=9, sticky=(W,E))
+                enc = ttk.Label(
+                    mainframe, text="Encrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W, E))
                 output = ttk.Entry(mainframe)
-                output.grid(column=2, row=10, sticky=(W,E))
+                output.grid(column=2, row=10, sticky=(W, E))
                 output.insert(0, encryptedMessage)
                 output.configure(state="readonly")
             elif userInput == 'file':
                 with open(filePath, 'r') as myfile:
-                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(
+                        filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                     for line in myfile:
                         encryptedFile.write(onetimepad.encrypt(line, 'random'))
                         encryptedFile.write('\n')
                     encryptedFile.close()
-                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
-                    enc.grid(column=2, row=9, sticky=(W,E))
-        else: 
+                    enc = ttk.Label(
+                        mainframe, text="Encrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W, E))
+        else:
             if userInput == 'string':
                 decryptedMessage = onetimepad.decrypt(text, 'random')
-                
-                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
-                enc.grid(column=2, row=9, sticky=(W,E))
+
+                enc = ttk.Label(
+                    mainframe, text="Decrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W, E))
                 output = ttk.Entry(mainframe)
-                output.grid(column=2, row=10, sticky=(W,E))
+                output.grid(column=2, row=10, sticky=(W, E))
                 output.insert(0, decryptedMessage)
                 output.configure(state="readonly")
             elif userInput == 'file':
                 with open(filePath, 'r') as myfile:
-                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(
+                        filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
                     for line in myfile:
-                        encryptedFile.write(onetimepad.decrypt(line[:-1], 'random'))
+                        encryptedFile.write(
+                            onetimepad.decrypt(line[:-1], 'random'))
                         encryptedFile.write('\n')
                     encryptedFile.close()
-                    enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
-                    enc.grid(column=2, row=9, sticky=(W,E))
-            
+                    enc = ttk.Label(
+                        mainframe, text="Decrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W, E))
+
     elif algorithmChoice == 'Reverse':
         if userInput == 'string':
             encryptedMessage = ''
@@ -152,39 +172,47 @@ def main():
                 encryptedMessage = encryptedMessage + text[i]
                 i = i - 1
             if processChoice == "encrypt":
-                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
+                enc = ttk.Label(
+                    mainframe, text="Encrypted message is: ", style="orLabel.TLabel")
             else:
-                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
-            enc.grid(column=2, row=9, sticky=(W,E))
+                enc = ttk.Label(
+                    mainframe, text="Decrypted message is: ", style="orLabel.TLabel")
+            enc.grid(column=2, row=9, sticky=(W, E))
             output = ttk.Entry(mainframe)
-            output.grid(column=2, row=10, sticky=(W,E))
+            output.grid(column=2, row=10, sticky=(W, E))
             output.insert(0, encryptedMessage)
             output.configure(state="readonly")
-        
+
         elif userInput == 'file':
             with open(filePath, 'r') as myfile:
                 if processChoice == 'encrypt':
-                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(
+                        filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                 else:
-                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(
+                        filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
                 for line in myfile:
                     encryptedFile.write(line[::-1])
                     encryptedFile.write('\n')
                 encryptedFile.close()
                 if processChoice == 'encrypt':
-                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
+                    enc = ttk.Label(
+                        mainframe, text="Encrypted file saved", style="orLabel.TLabel")
                 else:
-                    enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
-                enc.grid(column=2, row=9, sticky=(W,E))
-            
+                    enc = ttk.Label(
+                        mainframe, text="Decrypted file saved", style="orLabel.TLabel")
+                enc.grid(column=2, row=9, sticky=(W, E))
+
     elif algorithmChoice == 'XOR':
-        #Get key from user
-        enc = ttk.Label(mainframe, text= "Enter the key: ", style="orLabel.TLabel")
-        enc.grid(column=2, row=9, sticky=(W,E))
+        # Get key from user
+        enc = ttk.Label(mainframe, text="Enter the key: ",
+                        style="orLabel.TLabel")
+        enc.grid(column=2, row=9, sticky=(W, E))
         inputKey = StringVar()
-        xorKey = ttk.Entry(mainframe, textvariable=inputKey, style='Entry.TEntry')
-        xorKey.grid(column=2, row=10, sticky=(W,E))
-        
+        xorKey = ttk.Entry(mainframe, textvariable=inputKey,
+                           style='Entry.TEntry')
+        xorKey.grid(column=2, row=10, sticky=(W, E))
+
         def XOR():
             key = inputKey.get()
             if processChoice == 'encrypt':
@@ -197,16 +225,18 @@ def main():
                         x += 1
                         if x >= len(key):
                             x = 0
-                    enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
-                    enc.grid(column=2, row=12, sticky=(W,E))
+                    enc = ttk.Label(
+                        mainframe, text="Encrypted message is: ", style="orLabel.TLabel")
+                    enc.grid(column=2, row=12, sticky=(W, E))
                     output = ttk.Entry(mainframe)
-                    output.grid(column=2, row=13, sticky=(W,E))
+                    output.grid(column=2, row=13, sticky=(W, E))
                     output.insert(0, e)
                     output.configure(state="readonly")
-                
+
                 elif userInput == 'file':
                     with open(filePath, 'r') as myfile:
-                        encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                        encryptedFile = open((filePath[:len(
+                            filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                         for line in myfile:
                             e = ""
                             x = 0
@@ -219,8 +249,9 @@ def main():
                             encryptedFile.write(e)
                             encryptedFile.write('\n')
                         encryptedFile.close()
-                        enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
-                        enc.grid(column=2, row=9, sticky=(W,E))
+                        enc = ttk.Label(
+                            mainframe, text="Encrypted file saved", style="orLabel.TLabel")
+                        enc.grid(column=2, row=9, sticky=(W, E))
             else:
                 if userInput == 'string':
                     h = ""
@@ -235,16 +266,18 @@ def main():
                         x += 1
                         if x >= len(key):
                             x = 0
-                    enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
-                    enc.grid(column=2, row=12, sticky=(W,E))
+                    enc = ttk.Label(
+                        mainframe, text="Decrypted message is: ", style="orLabel.TLabel")
+                    enc.grid(column=2, row=12, sticky=(W, E))
                     output = ttk.Entry(mainframe)
-                    output.grid(column=2, row=13, sticky=(W,E))
+                    output.grid(column=2, row=13, sticky=(W, E))
                     output.insert(0, d)
                     output.configure(state="readonly")
 
                 elif userInput == 'file':
                     with open(filePath, 'r') as myfile:
-                        encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                        encryptedFile = open((filePath[:len(
+                            filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
                         for line in myfile:
                             line = line.strip()
                             h = ""
@@ -262,11 +295,12 @@ def main():
                             encryptedFile.write(d)
                             encryptedFile.write('\n')
                         encryptedFile.close()
-                        enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
-                        enc.grid(column=2, row=9, sticky=(W,E))
+                        enc = ttk.Label(
+                            mainframe, text="Decrypted file saved", style="orLabel.TLabel")
+                        enc.grid(column=2, row=9, sticky=(W, E))
 
         button = ttk.Button(mainframe, text='Submit', command=XOR)
-        button.grid(column=2, row=11, sticky=(W,E))
+        button.grid(column=2, row=11, sticky=(W, E))
 
     elif algorithmChoice == 'Atbash':
         if processChoice == 'encrypt':
@@ -274,7 +308,7 @@ def main():
                 a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 r = a[::-1]
                 e = ""
-                message=text.upper()
+                message = text.upper()
 
                 for i in range(len(message)):
                     if message[i] == chr(32):
@@ -284,20 +318,22 @@ def main():
                             if message[i] == a[j]:
                                 e += r[j]
                                 break
-                enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
-                enc.grid(column=2, row=12, sticky=(W,E))
+                enc = ttk.Label(
+                    mainframe, text="Encrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=12, sticky=(W, E))
                 output = ttk.Entry(mainframe)
-                output.grid(column=2, row=13, sticky=(W,E))
+                output.grid(column=2, row=13, sticky=(W, E))
                 output.insert(0, e)
                 output.configure(state="readonly")
-           
+
             elif userInput == 'file':
                 with open(filePath, 'r') as myfile:
-                    encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                    encryptedFile = open((filePath[:len(
+                        filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                     for line in myfile:
                         a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                         r = a[::-1]
-                        message = line.upper();
+                        message = line.upper()
                         e = ""
 
                         for i in range(len(message)):
@@ -311,14 +347,15 @@ def main():
                         encryptedFile.write(e)
                         encryptedFile.write('\n')
                     encryptedFile.close()
-                    enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
-                    enc.grid(column=2, row=9, sticky=(W,E))
+                    enc = ttk.Label(
+                        mainframe, text="Encrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W, E))
 
-        else: 
+        else:
             if userInput == 'string':
                 a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 r = a[::-1]
-                message = text.upper();
+                message = text.upper()
                 d = ""
 
                 for i in range(len(message)):
@@ -329,44 +366,49 @@ def main():
                             if message[i] == r[j]:
                                 d += a[j]
                                 break
-                enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
-                enc.grid(column=2, row=12, sticky=(W,E))
+                enc = ttk.Label(
+                    mainframe, text="Decrypted message is: ", style="orLabel.TLabel")
+                enc.grid(column=2, row=12, sticky=(W, E))
                 output = ttk.Entry(mainframe)
-                output.grid(column=2, row=13, sticky=(W,E))
+                output.grid(column=2, row=13, sticky=(W, E))
                 output.insert(0, d)
                 output.configure(state="readonly")
 
             elif userInput == 'file':
                 with open(filePath, 'r') as myfile:
-                        encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
-                        for line in myfile:
-                            line = line.strip()
-                            a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            r = a[::-1]
-                            message = line.upper();
-                            d = ""
+                    encryptedFile = open((filePath[:len(
+                        filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                    for line in myfile:
+                        line = line.strip()
+                        a = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                        r = a[::-1]
+                        message = line.upper()
+                        d = ""
 
-                            for i in range(len(message)):
-                                if message[i] == chr(32):
-                                    d += " "
-                                else:
-                                    for j in range(len(r)):
-                                        if message[i] == r[j]:
-                                            d += a[j]
-                                            break
-                            encryptedFile.write(d)
-                            encryptedFile.write('\n')
-                        encryptedFile.close()
-                        enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
-                        enc.grid(column=2, row=9, sticky=(W,E))
-    
+                        for i in range(len(message)):
+                            if message[i] == chr(32):
+                                d += " "
+                            else:
+                                for j in range(len(r)):
+                                    if message[i] == r[j]:
+                                        d += a[j]
+                                        break
+                        encryptedFile.write(d)
+                        encryptedFile.write('\n')
+                    encryptedFile.close()
+                    enc = ttk.Label(
+                        mainframe, text="Decrypted file saved", style="orLabel.TLabel")
+                    enc.grid(column=2, row=9, sticky=(W, E))
+
     elif algorithmChoice == 'Caeser':
-        #Get key from user
-        enc = ttk.Label(mainframe, text= "Enter the numeric key: ", style="orLabel.TLabel")
-        enc.grid(column=2, row=9, sticky=(W,E))
+        # Get key from user
+        enc = ttk.Label(mainframe, text="Enter the numeric key: ",
+                        style="orLabel.TLabel")
+        enc.grid(column=2, row=9, sticky=(W, E))
         inputKey = IntVar()
-        xorKey = ttk.Entry(mainframe, textvariable=inputKey, style='Entry.TEntry')
-        xorKey.grid(column=2, row=10, sticky=(W,E))
+        xorKey = ttk.Entry(mainframe, textvariable=inputKey,
+                           style='Entry.TEntry')
+        xorKey.grid(column=2, row=10, sticky=(W, E))
 
         def Caeser():
             key = inputKey.get()
@@ -374,6 +416,7 @@ def main():
             if processChoice == 'encrypt':
                 def encryptchar(char, key):
                     return chr(ord('A') + (ord(char) - ord('A') + key) % 26)
+
                 def encryptmsg(message, key):
                     message = message.upper()
                     cipher = ''
@@ -383,30 +426,34 @@ def main():
                         else:
                             cipher += char
                     return cipher
-                
+
                 if userInput == 'string':
-                    reqOutput = encryptmsg(text,key)
-                    enc = ttk.Label(mainframe, text= "Encrypted message is: ", style="orLabel.TLabel")
-                    enc.grid(column=2, row=12, sticky=(W,E))
+                    reqOutput = encryptmsg(text, key)
+                    enc = ttk.Label(
+                        mainframe, text="Encrypted message is: ", style="orLabel.TLabel")
+                    enc.grid(column=2, row=12, sticky=(W, E))
                     output = ttk.Entry(mainframe)
-                    output.grid(column=2, row=13, sticky=(W,E))
+                    output.grid(column=2, row=13, sticky=(W, E))
                     output.insert(0, reqOutput)
                     output.configure(state="readonly")
 
                 elif userInput == 'file':
                     with open(filePath, 'r') as myfile:
-                        encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
+                        encryptedFile = open((filePath[:len(
+                            filePath) - (len(fileExtension) + 1)] + '_encrypted' + '.' + fileExtension), 'x')
                         for line in myfile:
                             line = line.strip()
                             encryptedLine = encryptmsg(line, key)
                             encryptedFile.write(encryptedLine)
                             encryptedFile.write('\n')
                         encryptedFile.close()
-                        enc = ttk.Label(mainframe, text= "Encrypted file saved", style="orLabel.TLabel")
-                        enc.grid(column=2, row=14, sticky=(W,E))
-            else: 
+                        enc = ttk.Label(
+                            mainframe, text="Encrypted file saved", style="orLabel.TLabel")
+                        enc.grid(column=2, row=14, sticky=(W, E))
+            else:
                 def decrypt_char(char, key):
                     return chr(ord('A') + (ord(char) - ord('A') + 26 - key) % 26)
+
                 def decrypt_message(cipher, key):
                     cipher = cipher.upper()
                     message = ''
@@ -418,33 +465,37 @@ def main():
                     return message
 
                 if userInput == 'string':
-                    reqOutput = decrypt_message(text,key)
-                    enc = ttk.Label(mainframe, text= "Decrypted message is: ", style="orLabel.TLabel")
-                    enc.grid(column=2, row=12, sticky=(W,E))
+                    reqOutput = decrypt_message(text, key)
+                    enc = ttk.Label(
+                        mainframe, text="Decrypted message is: ", style="orLabel.TLabel")
+                    enc.grid(column=2, row=12, sticky=(W, E))
                     output = ttk.Entry(mainframe)
-                    output.grid(column=2, row=13, sticky=(W,E))
+                    output.grid(column=2, row=13, sticky=(W, E))
                     output.insert(0, reqOutput)
-                    output.configure(state="readonly") 
-                
+                    output.configure(state="readonly")
+
                 elif userInput == 'file':
                     with open(filePath, 'r') as myfile:
-                        encryptedFile = open((filePath[:len(filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
+                        encryptedFile = open((filePath[:len(
+                            filePath) - (len(fileExtension) + 1)] + '_decrypted' + '.' + fileExtension), 'x')
                         for line in myfile:
                             line = line.strip()
                             decryptedLine = decrypt_message(line, key)
                             encryptedFile.write(decryptedLine)
                             encryptedFile.write('\n')
                         encryptedFile.close()
-                        enc = ttk.Label(mainframe, text= "Decrypted file saved", style="orLabel.TLabel")
-                        enc.grid(column=2, row=14, sticky=(W,E))
+                        enc = ttk.Label(
+                            mainframe, text="Decrypted file saved", style="orLabel.TLabel")
+                        enc.grid(column=2, row=14, sticky=(W, E))
 
         button = ttk.Button(mainframe, text='Submit', command=Caeser)
-        button.grid(column=2, row=11, sticky=(W,E))
+        button.grid(column=2, row=11, sticky=(W, E))
+
 
 button = ttk.Button(mainframe, text='Submit', command=main)
-button.grid(column=2, row=8, sticky=(W,E))
+button.grid(column=2, row=8, sticky=(W, E))
 
-for child in mainframe.winfo_children(): 
+for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
 root.mainloop()
